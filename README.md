@@ -1,20 +1,28 @@
-Banking-IoT
+Energy Meters - IoT
 ========================
-See here for use case and requirements - https://gist.github.com/PatrickCallaghan/68ae4aa415982e383188
 
-A bank wants to help locate and tag all their expenses/transactions in their bank account to help them categorise their spending. The users will be able to tag any expense/transaction to allow for efficient retrieval and reporting. There will be 10 millions customers with on average 500 transactions a year. Some business customers may have up to 10,000 transactions a year. The client wants the tagged items to show up in searches in less than a second to give users a seamless experience between devices.
+An energy supplier is looking to capture all details of their smart meters for all their customers. The customer is expecting a total amount of 50 million devices but wants to start testing with 10 million devices although they want to know how DSE will scale when new users come online. They are concerned about the number of nodes that they will need to retain data over the long term. Over 90% of all the smart meters will deliver the values in a file to be loaded every morning. Each device will have 1 value for every 15 min interval in a day (96 values per day). The other 10% will deliver their results in real time.
 
-This requires DataStax Enterprise running in Solr mode.
+The customer wants
+
+    A REST API to show how real-time values will be delivered and stored.
+    An efficient way to store data going forward.
+    An indication on how long it will take to load 10 million new rows per day for daily load 
+    A REST interface to get all values for a device between 2 dates. 
+    A REST interface to get an aggregated view over 1 week, 1 month, 3 months, 6 months or a year. 
+
 
 To create the schema, run the following
 
 	mvn clean compile exec:java -Dexec.mainClass="com.datastax.demo.SchemaSetup" -DcontactPoints=localhost
 	
+
+Alex NOTE: this will not work for this demo.  Either remove or update based on Avinash's data generation process
 To create some transactions, run the following 
 	
-	mvn clean compile exec:java -Dexec.mainClass="com.datastax.banking.Main"  -DcontactPoints=localhost
+	mvn clean compile exec:java -Dexec.mainClass="com.datastax.meters.Main"  -DcontactPoints=localhost
 
-You can use the following parameters to change the default no of transactions and credit cards 
+You can use the following parameters to change the default no of transactions and devices 
 	
 	-DnoOfTransactions=10000000 -DnoOfCreditCards=1000000
 	
@@ -57,24 +65,30 @@ Gell all the transaction for credit card '1' that have a tag of Work and are wit
 ```
 select * from latest_transactions where solr_query = '{"q":"cc_no:1234123412341234", "fq":"tags:Work", "fq":"transaction_time:[NOW-30DAY TO *]"}' limit  1000;
 ```
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Either remove or update above stuff...
+Alex
+
 To use the webservice, start the web server using 
 ```
 mvn jetty:run
 ```
 Open a browser and use a url like 
 ```
-http://{servername}:8080/datastax-banking-iot/rest/gettransactions/{creditcardno}/{from}/{to}
+http://{servername}:8080/datastax-meters-iot/rest/gettransactions/{deviceid}/{from}/{to}
 ```
 Note : the from and to are dates in the format yyyyMMdd hh:mm:ss - eg 
 ```
-http://localhost:8080/datastax-banking-iot/rest/gettransactions/1234123412341234/20150101/20160102/
+http://localhost:8080/datastax-meters-iot/rest/gettransactions/1234123412341234/20150101/20160102/
 ```
 
 To run the requests run the following 
-	
-	mvn clean compile exec:java -Dexec.mainClass="com.datastax.banking.RunRequests" -DcontactPoints=localhost
+	NOTE Alex: does not work - remove or update accordingly
+------------------------------------------
+	mvn clean compile exec:java -Dexec.mainClass="com.datastax.meters.RunRequests" -DcontactPoints=localhost
 
-To change the no of requests and no of credit cards add the following 
+To change the no of requests and no of devices add the following 
 
 	-DnoOfRequests=100000  -DnoOfCreditCards=1000000
 	
