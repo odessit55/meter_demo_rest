@@ -1,46 +1,8 @@
-create keyspace if not exists datastax_banking_iot WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1' };
-
-use datastax_banking_iot; 
-
-
-create table if not exists transactions(
-	cc_no text,	
-	year int,
-	transaction_time timestamp,
- 	transaction_id text,
- 	user_id text,
-	location text,
-	items map<text, double>,
-	merchant text,
-	amount double,
-	status text,
-	notes text,
-	tags set<text>,
-	PRIMARY KEY ((cc_no, year), transaction_time)
-) WITH CLUSTERING ORDER BY (transaction_time desc);
-
-create table if not exists latest_transactions(
-	cc_no text,
-	transaction_time timestamp,
- 	transaction_id text,
- 	user_id text,
-	location text,
-	items map<text, double>,
-	merchant text,
-	amount double,
-	status text,
-	notes text,
-	tags set<text>,
-	PRIMARY KEY (cc_no, transaction_time)
-) WITH CLUSTERING ORDER BY (transaction_time desc) 
-and default_time_to_live = 2592000;
-
-
-CREATE KEYSPACE metrics WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}  AND durable_writes = true;
+CREATE KEYSPACE if not exists metrics WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '1'}  AND durable_writes = true;
 
 use metrics;
 
-CREATE TABLE metrics.daily_rollups (
+CREATE TABLE if not exists metrics.daily_rollups (
     device_id text,
     metric_day timestamp,
     metric_avg decimal,
@@ -51,7 +13,7 @@ CREATE TABLE metrics.daily_rollups (
 ) WITH CLUSTERING ORDER BY (metric_day DESC)
 ;
 
-REATE TABLE metrics.raw_metrics (
+CREATE TABLE if not exists metrics.raw_metrics (
     device_id text,
     metric_time timestamp,
     metric_name text,
