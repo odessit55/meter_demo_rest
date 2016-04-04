@@ -25,7 +25,9 @@ public class Main {
 	public Main() {
 
 		String contactPointsStr = PropertyHelper.getProperty("contactPoints", "localhost");
-		String noOfCreditCardsStr = PropertyHelper.getProperty("noOfCreditCards", "10000");
+                /* Changed. 04-03-16 Alex */
+		/* String noOfCreditCardsStr = PropertyHelper.getProperty("noOfCreditCards", "10000"); */
+		String noOfDeviceIDsStr = PropertyHelper.getProperty("noOfDeviceIDs", "10000");
 		String noOfTransactionsStr = PropertyHelper.getProperty("noOfTransactions", "100000");
 
 		BlockingQueue<Transaction> queue = new ArrayBlockingQueue<Transaction>(1000);
@@ -37,10 +39,10 @@ public class Main {
 		TransactionDao dao = new TransactionDao(contactPointsStr.split(","));
 
 		int noOfTransactions = Integer.parseInt(noOfTransactionsStr);
-		int noOfCreditCards = Integer.parseInt(noOfCreditCardsStr);
+		int noOfDeviceIDs = Integer.parseInt(noOfDeviceIDsStr);
 
                 /* Changed. 04-24-16 Alex */
-		logger.info("Writing " + noOfTransactions + " transactions for " + noOfCreditCards + " meter readings.");
+		logger.info("Writing " + noOfTransactions + " transactions for " + noOfDeviceIDs + " meter readings.");
 
 		for (int i = 0; i < noOfThreads; i++) {
 			
@@ -53,7 +55,7 @@ public class Main {
 		for (int i = 0; i < noOfTransactions; i++) {
 			
 			try{
-				queue.put(TransactionGenerator.createRandomTransaction(noOfCreditCards));
+				queue.put(TransactionGenerator.createRandomTransaction(noOfDeviceIDs));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

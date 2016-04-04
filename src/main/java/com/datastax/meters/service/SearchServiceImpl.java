@@ -37,7 +37,7 @@ public class SearchServiceImpl implements SearchService {
 
 		//If the to and from dates are within the 3 months we can use the latest transactions table as it should be faster.		
                 /* only one set of transactions for now. 03-24-16 Alex */
-			transactions = dao.getTransactionsForCCNoTagsAndDate(deviceID, search, from, to);
+			transactions = dao.getTransactionsForDeviceIDTagsAndDate(deviceID, search, from, to);
 			
 		timer.end();
 		timerSum += timer.getTimeTakenMillis();

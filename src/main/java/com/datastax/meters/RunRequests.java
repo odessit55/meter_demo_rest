@@ -29,7 +29,8 @@ public class RunRequests {
 	public RunRequests() {
 
 		String contactPointsStr = PropertyHelper.getProperty("contactPoints", "localhost");
-		String noOfCreditCardsStr = PropertyHelper.getProperty("noOfCreditCards", "1000000");
+                /* Changed. 04-03-16 Alex */
+		String noOfDeviceIDsStr = PropertyHelper.getProperty("noOfDeviceIDs", "1000000");
 		String noOfRequestsStr = PropertyHelper.getProperty("noOfRequests", "10000");
 
 		TransactionDao dao = new TransactionDao(contactPointsStr.split(","));
@@ -37,7 +38,7 @@ public class RunRequests {
 		int noOfThreads = Integer.parseInt(PropertyHelper.getProperty("noOfThreads", "8"));
 		ExecutorService executor = Executors.newFixedThreadPool(noOfThreads);
 
-		int noOfCreditCards = Integer.parseInt(noOfCreditCardsStr);
+		int noOfDeviceIDs = Integer.parseInt(noOfDeviceIDsStr);
 		int noOfRequests = Integer.parseInt(noOfRequestsStr);
 
 		SearchService cqlService = new SearchServiceImpl();
@@ -57,7 +58,8 @@ public class RunRequests {
 			tags.add(search);
 
 			Transaction t = new Transaction();
-			t.setCreditCardNo(new Double(Math.random() * noOfCreditCards).intValue() + "");
+                        /* Changed. 04-03-16 Alex */
+			t.setDeviceID(new Double(Math.random() * noOfDeviceIDs).intValue() + "");
 			
 			if (Math.random()<.5){
 				t.setTags(null);

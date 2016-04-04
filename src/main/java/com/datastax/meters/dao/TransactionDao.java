@@ -40,13 +40,14 @@ public class TransactionDao {
 
 	private static final String GET_TRANSACTIONS_BY_ID = "select * from " + transactionTable
 			+ " where device_id = ? ";
-	private static final String GET_TRANSACTIONS_BY_CCNO = "select * from " + transactionTable
+        /* Changed. 04-03-16 Alex */
+	private static final String GET_TRANSACTIONS_BY_TIME = "select * from " + transactionTable
 			+ " where device_id = ? and metric_time >= ? and metric_time < ?";
 
 	
 	private PreparedStatement insertTransactionStmt;
 	private PreparedStatement getTransactionById;
-	private PreparedStatement getTransactionByCCno;
+	private PreparedStatement getTransactionByTime;
 
 	private AtomicLong count = new AtomicLong(0);
 
@@ -60,7 +61,8 @@ public class TransactionDao {
 			this.insertTransactionStmt = session.prepare(INSERT_INTO_TRANSACTION);
 
 			this.getTransactionById = session.prepare(GET_TRANSACTIONS_BY_ID);
-			this.getTransactionByCCno = session.prepare(GET_TRANSACTIONS_BY_CCNO);
+                        /* changed. 04-03-16 Alex */
+			this.getTransactionByTime = session.prepare(GET_TRANSACTIONS_BY_TIME);
 
 			this.insertTransactionStmt.setConsistencyLevel(ConsistencyLevel.LOCAL_QUORUM);
 
@@ -125,9 +127,10 @@ public class TransactionDao {
         /* not needed. 03-24-16 Alex */
 	
         /* use deviceId  03-24-16 Alex */
-	public List<Transaction> getTransactionsForCCNoTagsAndDate(String deviceID, Set<String> tags, DateTime from,
+	public List<Transaction> getTransactionsForDeviceIDTagsAndDate(String deviceID, Set<String> tags, DateTime from,
 			DateTime to) {
-		ResultSet resultSet = this.session.execute(getTransactionByCCno.bind(deviceID, from.toDate(), to.toDate()));
+                        /* changed. 04-03-16 Alex */
+		ResultSet resultSet = this.session.execute(getTransactionByTime.bind(deviceID, from.toDate(), to.toDate()));
 		
 		return processResultSet(resultSet, tags);
 	}
